@@ -1,0 +1,38 @@
+---
+title: "prac1_exercises.qmd"
+author: "Maddy Bell"
+---
+
+```{r}
+round(3.14159)
+round(3.14159, digits = 2)
+```
+```{r}
+print(rep(5,7))
+print(rep(x = 5, times = 7))
+```
+```{r}
+my_character <- "hello"
+my_numerical <- 9.39
+my_logical <- TRUE
+print(my_character)
+print(class(my_character))
+print(my_numerical)
+print(class(my_numerical))
+print(my_logical)
+print(class(my_logical))
+```
+```{r}
+cell_id_1 <- "CX1"
+cell_id_2 <- "CX2"
+treated_1 <- TRUE
+treated_2 <- FALSE
+num_before_1 <- 5415
+num_before_2 <- 8123
+num_after_1 <- 1432
+num_after_2 <- 7543
+
+is.na(num_before_1)
+is.nan(num_before_1)
+```
+
