@@ -1,0 +1,42 @@
+---
+title: "Practical_2_Data_Frames_and_Plots/prac2_exercises.qmd"
+author: "maddy bell"
+---
+
+```{r}
+library(gt)
+library(tidyverse)
+library(maps)
+```
+```{r}
+breeding_locations <- read.csv("data/breeding_site_locations.csv")
+gt(breeding_locations)
+```
+
+```{r}
+colnames(breeding_locations)
+```
+```{r}
+glimpse(breeding_locations)
+```
+finding dimensions of table 
+```{r}
+print(nrow(breeding_locations))
+print(ncol(breeding_locations))
+print(dim(breeding_locations))
+```
+```{r}
+input_vec <- c(5, -10, 4, -3)
+print(input_vec |> 
+        mean() |>
+        abs() |>
+        round(2))
+```
+```{r}
+y <- 12
+y == 7 
+y < 15
+y > 20 
+y <= 12
+```
+
