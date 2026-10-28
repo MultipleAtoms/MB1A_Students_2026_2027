@@ -48,4 +48,53 @@ bird_breeding_exc <- bird_breeding_selected |> filter(Site != "Spain")
 
 gt(bird_breeding_exc)
 ```
+```{r}
+bird_migration_grouped <- migratory_connectivity_exc |> group_by(Site) 
+
+bird_migration_summary <- bird_migration_grouped |> summarise(
+  Stopover_Latitude = median(Stopover_Latitude, na.rm = TRUE),
+  Stopover_Longitude = median(Stopover_Longitude, na.rm = TRUE),
+  Iberian_Latitude = median(Iberian_Latitude, na.rm = TRUE),
+  Iberian_Longitude = median(Iberian_Longitude, na.rm = TRUE),
+  Westmost_Latitude = median(Westmost_Latitude, na.rm = TRUE),
+  Westmost_Longitude = median(Westmost_Longitude, na.rm = TRUE),
+  Winter_Latitude = median(Winter_Latitude, na.rm = TRUE),
+  Winter_Longitude = median(Winter_Longitude, na.rm = TRUE),
+)
+
+gt(bird_migration_summary)
+```
+I will join the two datasets together as they share the Site column
+```{r}
+combined_bird_data <- full_join(bird_breeding_exc, bird_migration_summary)
+
+gt(combined_bird_data)
+```
+converting to long format 
+```{r}
+combined_bird_piv <- combined_bird_data |>
+  pivot_longer(
+    cols = ends_with(c("_Longitude", "_Latitude")),
+    names_sep = "_",
+    names_to = c("Location_Type", ".value")
+  )
+
+gt(combined_bird_piv)
+```
+creating subsets of data
+```{r}
+keep_spring <- c("Breeding", "Stopover", "Winter")
+keep_autumn <- c("Breeding", "Iberian", "Westmost", "Winter")
+
+spring_data <- combined_bird_piv |> filter(Location_Type %in% keep_spring)
+autumn_data <- combined_bird_piv |> filter(Location_Type %in% keep_autumn)
+
+gt(spring_data)
+gt(autumn_data)
+
+```
+```{r}
+write_csv(spring_data, "output/birds_spring.csv")
+write_csv(autumn_data, "output/birds_autumn.csv")
+```
 
