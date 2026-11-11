@@ -1,0 +1,43 @@
+---
+title: "prac3_exercises"
+---
+
+```{r}
+set.seed(42)
+```
+```{r}
+for (i in seq_len(20)) {
+  print(i^3)
+}
+```
+```{r}
+for (i in seq_len(5)) {
+  print(paste(sample(letters, 5, replace = TRUE), collapse=""))
+}
+```
+building 10-course breakfast 
+```{r}
+library(tidyverse)
+library(gt)
+set.seed(40)
+
+breakfast <- c("eggs", "bacon", "sausages", "toast")
+b_courses <- tibble()
+
+for (course in seq_len(10)) {
+  b_item <- sample(breakfast, size = 1)
+  b_num <- sample(1:5,1)
+  current_row <- tibble(
+    Breakfast_item = b_item,
+    Number = b_num
+  )
+  b_courses <- b_courses |> bind_rows(current_row)
+}
+gt(b_courses)
+```
+binomial calculations 
+```{r}
+count_p_flowers <- rbinom(n = 1000, size = 200, prob = 0.6)
+print(sum(count_p_flowers >= 125) / length(count_p_flowers))
+```
+
