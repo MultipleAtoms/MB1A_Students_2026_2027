@@ -1,0 +1,52 @@
+---
+title: "drosophila"
+---
+
+reading drosophila file
+```{r}
+dcounts <- read_csv("data/drosophila_counts.csv")
+gt(dcounts)
+```
+summarising data 
+```{r}
+library(tidyverse)
+library(gt)
+set.seed(42)
+```
+```{r}
+d_data <- read_csv("data/drosophila_counts.csv")
+summary_d_data <- summarise(d_data, 
+          total_nm = sum(Novel_Mutation_Count),
+          max_nm = max(Novel_Mutation_Count),
+          mean_nm = mean(Novel_Mutation_Count),
+          variance_nm = var(Novel_Mutation_Count))
+gt(summary_d_data)
+```
+```{r}
+ggplot(d_data, aes(x = Novel_Mutation_Count) )+ 
+  geom_bar() +
+  ggtitle("Number of populations with each drosophila mutation count") + 
+  xlab("Novel mutation count") +
+  ylab("number of populations ")
+```
+simulating poisson data 
+```{r}
+sample_mean <- summary_d_data |> pull(mean_nm)
+n_populations <- nrow(dcounts)
+
+mean_sim <- c()
+var_sim <- c()
+
+for (i in seq_len(1000)) {
+  sim_counts <- rpois(n_populations, sample_mean )
+  mean_sim <- c(mean_sim, mean(sim_counts))
+  mean_var <- c(var_sim, var(sim_counts))
+}
+sample_diff <- abs(mean_sim - var_sim)
+df_sim <- tibble(mean = mean_sim, var = var_sim, diff = sample_diff)
+
+gt(df_sim)
+```
+
+  
+
