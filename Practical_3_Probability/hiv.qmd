@@ -1,0 +1,35 @@
+---
+title: "hpv"
+---
+```{r}
+library(tidyverse)
+library(gt)
+set.seed(42)
+```
+
+```{r}
+cm_all_ages <- read.csv("data/cm_all_ages.csv") 
+gt(cm_all_ages)
+```
+
+```{r}
+total_num <- cm_all_ages |> pull(N_individuals) |> sum()
+print(total_num)
+
+tp <- cm_all_ages |> filter(Cytology == "Abnormal", HPV_Status == "HPV+") |> pull(N_individuals)
+fp<- cm_all_ages |> filter(Cytology == "Normal", HPV_Status == "HPV+") |> pull(N_individuals)
+tn<- cm_all_ages |> filter(Cytology == "Normal", HPV_Status == "HPV-") |> pull(N_individuals)
+fn<- cm_all_ages |> filter(Cytology == "Abnormal", HPV_Status == "HPV-") |> pull(N_individuals)
+
+prop_abnormal_given_hpv <- (tp/(tp + fp)) |> print()
+
+
+prop_abnormal_given_no_hpv <- (fn/(tn + fn)) |> print()
+
+prop_hpv_given_abnormal <- (tp/(tp + fn)) |> print()
+prop_no_hpv_given_normal <- (tn/(tn + fp)) |> print()
+```
+```{r}
+
+```
+
