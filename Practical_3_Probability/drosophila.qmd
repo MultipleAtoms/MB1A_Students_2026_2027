@@ -14,7 +14,7 @@ library(gt)
 set.seed(42)
 ```
 ```{r}
-d_data <- read_csv("data/drosophila_counts.csv")
+d_data <- read.csv("data/drosophila_counts.csv")
 summary_d_data <- summarise(d_data, 
           total_nm = sum(Novel_Mutation_Count),
           max_nm = max(Novel_Mutation_Count),
@@ -32,20 +32,79 @@ ggplot(d_data, aes(x = Novel_Mutation_Count) )+
 simulating poisson data 
 ```{r}
 sample_mean <- summary_d_data |> pull(mean_nm)
-n_populations <- nrow(dcounts)
+n_populations <- nrow(d_data)
 
 mean_sim <- c()
 var_sim <- c()
 
 for (i in seq_len(1000)) {
-  sim_counts <- rpois(n_populations, sample_mean )
-  mean_sim <- c(mean_sim, mean(sim_counts))
-  mean_var <- c(var_sim, var(sim_counts))
+  sim_counts <- rpois(n = n_populations, lambda = sample_mean )
+  
+  current_mean <- mean(sim_counts)
+  cuurent_var <- var(sim_counts)
+  
+  mean_sim <- c(mean_sim, current_mean)
+  mean_var <- c(var_sim, cuurent_var)
 }
-sample_diff <- abs(mean_sim - var_sim)
-df_sim <- tibble(mean = mean_sim, var = var_sim, diff = sample_diff)
+
+df_sim <- tibble(mean = mean_sim, var = var_sim, diff = abs(mean_sim - var_sim))
 
 gt(df_sim)
+```
+```{r}
+sample_mean <- summary_d_data |> pull(mean_nm)
+sample_var <- summary_d_data |> pull(variance_nm)
+n_populations <- nrow(d_data)
+
+sample_diff <- abs(sample_mean - sample_var)
+print(sample_diff)
+
+simulated_counts <- rpois(
+  n = n_populations,
+  lambda = sample_mean
+)
+print(simulated_counts)
+
+mean_sim <- c()
+var_sim <- c()
+
+for (i in seq_len(1000)) {
+  # Use `rpois()` to simulate mutation counts for
+  # 17 populations
+  simulated_counts <- rpois(
+    n = n_populations,
+    lambda = sample_mean
+  )
+
+  # Take the mean and variance of the simulated counts
+  current_mean <- mean(simulated_counts)
+  current_var <- var(simulated_counts)
+
+  # Append these values to the `mean_sim` and `var_sim` vectors.
+  mean_sim <- c(mean_sim, current_mean)
+  var_sim <- c(var_sim, current_var)
+}
+
+df_sim <- tibble(
+  mean = mean_sim,
+  var = var_sim,
+  diff = abs(mean_sim - var_sim)
+)
+
+gt(df_sim)
+```
+
+```{r}
+ggplot(df_sim, aes(x = diff))+ 
+  geom_histogram(bins = 50) +
+  ggtitle("Number of populations with each drosophila mutation count") + 
+  xlab("Diff") +
+  ylab("frequency")
+  
+```
+```{r}
+greater <- df_sim |> filter(diff > sample_diff)
+print(nrow(greater)/nrow(df_sim))
 ```
 
   

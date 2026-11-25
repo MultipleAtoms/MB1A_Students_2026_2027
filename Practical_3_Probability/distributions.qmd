@@ -1,0 +1,45 @@
+---
+title: "distributions"
+---
+
+```{r}
+library(tidyverse)
+library(gt)
+library(janitor)
+set.seed(42)
+```
+
+```{r}
+fish_data <- read.csv("data/fish.csv") |> clean_names()
+geo <- fish_data  |> filter(genus == "Geotria") 
+ggplot(geo, aes(x = total_length_cm)) +
+   geom_histogram() +
+  ggtitle("") + 
+  xlab("Length of Geotra") +
+  ylab("fFrequency")
+```
+```{r}
+ggplot(geo, aes(
+  x = total_length_cm
+)) +
+  geom_histogram(aes(y = after_stat(density)),
+    bins = 30
+  ) +
+  ggtitle("Distribution of total length in Geotria fish  - Observed") +
+  xlab("Total length (cm)") +
+  ylab("Density") +
+  theme_minimal()
+```
+```{r}
+mean_obs <- mean(pull(geo, total_length_cm))
+sd_obs <- sd(pull(geo, total_length_cm))
+
+ggplot(geo, aes(x = total_length_cm)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 50) +
+  stat_function(fun = dnorm, args = list(mean = mean_obs, sd = sd_obs)) +
+    ggtitle("Distribution of total length in Geotria fish  -\nObserved and Theoretical") +
+  xlab("Total length (cm)") +
+  ylab("Density") +
+  theme_minimal()
+```
+
